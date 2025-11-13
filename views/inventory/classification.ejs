@@ -1,0 +1,11 @@
+<%# Content Heading - Displays the view title in an <h1> tag %>
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')} %>
+
+<%# Message Block - Future-proofing for displaying messages/errors (currently commented out) %>
+<%# messages() %>
+
+<%# Inventory Items Display - Renders the HTML content passed in the 'grid' variable %>
+<%- grid %>

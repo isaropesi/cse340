@@ -1,0 +1,19 @@
+<h1>Login</h1>
+
+<form id="loginForm" action="/account/login" method="post">
+    <fieldset>
+        <label for="account_email">Email:</label><br>
+        <input type="email" id="account_email" name="account_email" required><br>
+
+        <label for="account_password">Password:</label><br>
+        <input type="password" id="account_password" name="account_password" required
+            pattern="^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=\[\]{};':\\|,.<>\/?]).{12,}$" required><br>
+        <small>Password must be at least 12 characters and include one capital letter, one number, and one special
+            character.</small><br>
+
+        <input type="submit" value="Login">
+    </fieldset>
+</form>
+
+<p>No account? <a href="/account/register">Register here</a></p>
+

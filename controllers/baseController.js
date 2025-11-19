@@ -15,7 +15,7 @@ baseController.buildHome = utilities.handleErrors(async function(req, res){
 * ********************************* */
 baseController.throwError = utilities.handleErrors(async function(req, res, next) {
   // This will intentionally trigger a ReferenceError (which defaults to a 500 status)
-  nonExistentFunction() 
+  throw new Error("This is an intentional error!")
 })
 
 module.exports = baseController

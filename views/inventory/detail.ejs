@@ -1,0 +1,11 @@
+<%# Inventory Detail View %>
+
+<%# Content Heading - Displays the vehicle title (Make/Model/Year) %>
+<% if (title) { %>
+    <h1><%= title %></h1>
+<% } else {
+    res.redirect('/')
+} %>
+
+<%# Vehicle Detail Display - Renders the HTML content passed in the 'detailGrid' variable %>
+<%- detailGrid %>

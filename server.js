@@ -29,7 +29,10 @@ app.set("layout", "./layouts/layout") // not at views root
 app.use(static)
 
 // Index route
-app.get("/", utilities.handleErrors(baseController.buildHome))
+app.get("/", baseController.buildHome)
+
+// Route to trigger a 500 server error (Task 3)
+app.get("/trigger-error", baseController.throwError)
 
 // Inventory routes
 app.use("/inv", inventoryRoute)

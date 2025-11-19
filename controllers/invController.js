@@ -4,9 +4,9 @@ const utilities = require("../utilities/")
 const invCont = {}
 
 /* ***************************
- *  Build inventory by classification view
+ * Build inventory by classification view
  * ************************** */
-invCont.buildByClassificationId = async function (req, res, next) {
+invCont.buildByClassificationId = utilities.handleErrors(async function (req, res, next) {
   const classification_id = req.params.classificationId
   const data = await invModel.getInventoryByClassificationId(classification_id)
   const grid = await utilities.buildClassificationGrid(data)
@@ -17,6 +17,32 @@ invCont.buildByClassificationId = async function (req, res, next) {
     nav,
     grid,
   })
-}
+})
 
-  module.exports = invCont
+/* ***********************************
+* Build the inventory detail view (Task 1)
+* ********************************* */
+invCont.buildDetail = utilities.handleErrors(async function (req, res, next) {
+  const inv_id = req.params.invId
+  const vehicleData = await invModel.getInventoryById(inv_id)
+
+  // 404 Error handling if vehicle not found
+  if (!vehicleData) {
+    let err = new Error("Sorry, that vehicle could not be found.")
+    err.status = 404
+    next(err)
+    return
+  }
+
+  const nav = await utilities.getNav()
+  const detailGrid = utilities.buildVehicleDetail(vehicleData)
+  const title = `${vehicleData.inv_year} ${vehicleData.inv_make} ${vehicleData.inv_model}`
+
+  res.render("inventory/detail", {
+    title: title,
+    nav,
+    detailGrid,
+  })
+})
+
+module.exports = invCont

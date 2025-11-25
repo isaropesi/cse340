@@ -25,6 +25,7 @@ const accountRoute = require("./routes/accountRoute")
 const inventoryRoute = require("./routes/inventoryRoute")
 // Utility file required for error handling and other functions
 const utilities = require("./utilities/")
+const bodyParser = require("body-parser")
 
 /* ***********************
  * View Engine and Templates
@@ -45,6 +46,8 @@ app.set("layout", "./layouts/layout") // not at views root
   saveUninitialized: true,
   name: 'sessionId',
 }))
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 /* ***********************
  * Routes

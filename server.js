@@ -19,6 +19,8 @@ app.use(function(req, res, next){
   res.locals.messages = require('express-messages')(req, res)
   next()
 })
+// Account route
+const accountRoute = require("./routes/accountRoute")
 // Inventory route
 const inventoryRoute = require("./routes/inventoryRoute")
 // Utility file required for error handling and other functions
@@ -59,7 +61,7 @@ app.get("/trigger-error", baseController.throwError)
 app.use("/inv", inventoryRoute)
 
 // Account routes
-app.use("/account", require("./routes/accountRoute"))
+app.use("/account", accountRoute)
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {

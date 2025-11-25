@@ -360,7 +360,7 @@ footer {
 
 #loginForm button {
   padding: 0.75rem;
-  background-color: #4c96d7;
+  background-color: #0000EE;
   color: white;
   border: none;
   border-radius: 4px;
@@ -369,7 +369,7 @@ footer {
 }
 
 #loginForm button:hover {
-  background-color: #3a7ab5;
+  background-color: #0000CC;
 }
 
 form + p {
@@ -378,7 +378,7 @@ form + p {
 }
 
 form + p a {
-  color: #4c96d7;
+  color: #0000EE;
   text-decoration: none;
 }
 

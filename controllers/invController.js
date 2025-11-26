@@ -16,6 +16,7 @@ invCont.buildByClassificationId = utilities.handleErrors(async function (req, re
     title: className + " vehicles",
     nav,
     grid,
+    errors: null,
   })
 })
 
@@ -42,6 +43,7 @@ invCont.buildDetail = utilities.handleErrors(async function (req, res, next) {
     title: title,
     nav,
     detailGrid,
+    errors: null,
   })
 })
 

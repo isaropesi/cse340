@@ -59,4 +59,24 @@ async function registerAccount(req, res) {
   }
 }
 
-module.exports = { buildLogin, buildRegistration, registerAccount }
+/* ****************************************
+*  Process Login
+* *************************************** */
+async function loginAccount(req, res) {
+  let nav = await utilities.getNav()
+  const { account_email, account_password } = req.body
+  // This is a placeholder for the actual login process
+  // For now, it just sends a success message
+  req.flash(
+    "notice",
+    `Congratulations, you\'re logged in.`
+  )
+  res.status(200).render("account/login", {
+    title: "Login",
+    nav,
+    errors: null,
+    account_email,
+  })
+}
+
+module.exports = { buildLogin, buildRegistration, registerAccount, loginAccount }

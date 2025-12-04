@@ -39,4 +39,7 @@ router.post(
 // Route to build vehicle detail view (Task 1)
 router.get("/detail/:invId", invController.buildDetail);
 
+// Route to build edit inventory view
+router.get("/edit/:inv_id", utilities.handleErrors(invController.editInventoryView));
+
 module.exports = router

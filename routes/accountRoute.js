@@ -30,4 +30,31 @@ router.post(
   utilities.handleErrors(accountController.registerAccount)
 )
 
+// Route to build account update view
+router.get("/update/:accountId", utilities.checkLogin, utilities.handleErrors(accountController.buildAccountUpdate));
+
+// Process the account update
+router.post(
+  "/update",
+  utilities.checkLogin,
+  regValidate.updateAccountRules(),
+  regValidate.checkUpdateAccountData,
+  utilities.handleErrors(accountController.updateAccount)
+);
+
+// Process the password change
+router.post(
+  "/change-password",
+  utilities.checkLogin,
+  regValidate.changePasswordRules(),
+  regValidate.checkPasswordData,
+  utilities.handleErrors(accountController.changePassword)
+);
+
+// Process the logout
+router.get("/logout", (req, res) => {
+  res.clearCookie("jwt")
+  res.redirect("/")
+});
+
 module.exports = router;

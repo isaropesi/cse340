@@ -23,6 +23,8 @@ app.use(function (req, res, next) {
 const accountRoute = require("./routes/accountRoute")
 // Inventory route
 const inventoryRoute = require("./routes/inventoryRoute")
+// Review route
+const reviewRoute = require("./routes/reviewRoute")
 // Utility file required for error handling and other functions
 const utilities = require("./utilities/")
 const bodyParser = require("body-parser")
@@ -68,6 +70,9 @@ app.use("/inv", inventoryRoute)
 
 // Account routes
 app.use("/account", accountRoute)
+
+// Review routes
+app.use("/review", reviewRoute)
 
 // File Not Found Route - must be last route in list
 app.use(async (req, res, next) => {

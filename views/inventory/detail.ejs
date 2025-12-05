@@ -1,11 +1,297 @@
 <%# Inventory Detail View %>
 
-<%# Content Heading - Displays the vehicle title (Make/Model/Year) %>
-<% if (title) { %>
-    <h1><%= title %></h1>
-<% } else {
-    res.redirect('/')
-} %>
+    <%# Content Heading - Displays the vehicle title (Make/Model/Year) %>
+        <% if (title) { %>
+            <h1>
+                <%= title %>
+            </h1>
+            <% } else { res.redirect('/') } %>
 
-<%# Vehicle Detail Display - Renders the HTML content passed in the 'detailGrid' variable %>
-<%- detailGrid %>
+                <%# Vehicle Detail Display - Renders the HTML content passed in the 'detailGrid' variable %>
+                    <%- detailGrid %>
+
+                        <%# Reviews Section %>
+                            <div class="reviews-section">
+                                <div class="reviews-header">
+                                    <h2>Customer Reviews</h2>
+                                    <% if (ratingData && ratingData.review_count> 0) { %>
+                                        <div class="overall-rating">
+                                            <div class="rating-stars">
+                                                <% const avgRating=parseFloat(ratingData.avg_rating); %>
+                                                    <% for(let i=1; i <=5; i++) { %>
+                                                        <span
+                                                            class="star <%= i <= Math.round(avgRating) ? 'filled' : '' %>">★</span>
+                                                        <% } %>
+                                            </div>
+                                            <span class="rating-text">
+                                                <%= avgRating.toFixed(1) %> out of 5 stars (<%= ratingData.review_count
+                                                        %> review<%= ratingData.review_count !==1 ? 's' : '' %>)
+                                            </span>
+                                        </div>
+                                        <% } else { %>
+                                            <p class="no-rating">No reviews yet. Be the first to review this vehicle!
+                                            </p>
+                                            <% } %>
+                                </div>
+
+                                <%# Add Review Button %>
+                                    <% if (locals.loggedin) { %>
+                                        <% if (!hasUserReviewed) { %>
+                                            <div class="add-review-section">
+                                                <a href="/review/add/<%= inv_id %>" class="add-review-btn">Write a
+                                                    Review</a>
+                                            </div>
+                                            <% } else { %>
+                                                <p class="already-reviewed">You have already reviewed this vehicle. <a
+                                                        href="/review/my-reviews">View your reviews</a></p>
+                                                <% } %>
+                                                    <% } else { %>
+                                                        <p class="login-prompt">
+                                                            <a href="/account/login">Log in</a> to write a review for
+                                                            this vehicle.
+                                                        </p>
+                                                        <% } %>
+
+                                                            <%# Display Reviews %>
+                                                                <% if (reviews && reviews.length> 0) { %>
+                                                                    <div class="reviews-list">
+                                                                        <% reviews.forEach(review=> { %>
+                                                                            <div class="review-item">
+                                                                                <div class="review-header-item">
+                                                                                    <div class="reviewer-info">
+                                                                                        <strong class="reviewer-name">
+                                                                                            <%= review.account_firstname
+                                                                                                %>
+                                                                                                <%= review.account_lastname.charAt(0)
+                                                                                                    %>.
+                                                                                        </strong>
+                                                                                        <div
+                                                                                            class="review-rating-stars">
+                                                                                            <% for(let i=1; i <=5; i++)
+                                                                                                { %>
+                                                                                                <span
+                                                                                                    class="star <%= i <= review.review_rating ? 'filled' : '' %>">★</span>
+                                                                                                <% } %>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <span class="review-date">
+                                                                                        <%= new
+                                                                                            Date(review.review_date).toLocaleDateString('en-US',
+                                                                                            { year: 'numeric' ,
+                                                                                            month: 'long' ,
+                                                                                            day: 'numeric' }) %>
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div class="review-content">
+                                                                                    <p>
+                                                                                        <%= review.review_text %>
+                                                                                    </p>
+                                                                                </div>
+
+                                                                                <%# Show edit/delete options if this is
+                                                                                    the user's review %>
+                                                                                    <% if (locals.loggedin &&
+                                                                                        locals.accountData.account_id===review.account_id)
+                                                                                        { %>
+                                                                                        <div
+                                                                                            class="review-actions-user">
+                                                                                            <a href="/review/edit/<%= review.review_id %>"
+                                                                                                class="edit-review-link">Edit</a>
+                                                                                            <a href="/review/delete/<%= review.review_id %>"
+                                                                                                class="delete-review-link">Delete</a>
+                                                                                        </div>
+                                                                                        <% } %>
+                                                                            </div>
+                                                                            <% }) %>
+                                                                    </div>
+                                                                    <% } %>
+                            </div>
+
+                            <style>
+                                .reviews-section {
+                                    max-width: 900px;
+                                    margin: 3rem auto;
+                                    padding: 2rem;
+                                    background: #f9f9f9;
+                                    border-radius: 8px;
+                                }
+
+                                .reviews-header {
+                                    margin-bottom: 2rem;
+                                }
+
+                                .reviews-header h2 {
+                                    margin-top: 0;
+                                    margin-bottom: 1rem;
+                                    color: #333;
+                                }
+
+                                .overall-rating {
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 1rem;
+                                    flex-wrap: wrap;
+                                }
+
+                                .rating-stars {
+                                    display: flex;
+                                    gap: 0.25rem;
+                                }
+
+                                .star {
+                                    color: #ddd;
+                                    font-size: 1.5rem;
+                                }
+
+                                .star.filled {
+                                    color: #ffc107;
+                                }
+
+                                .rating-text {
+                                    font-size: 1.1rem;
+                                    color: #666;
+                                }
+
+                                .no-rating {
+                                    color: #666;
+                                    font-style: italic;
+                                }
+
+                                .add-review-section {
+                                    margin: 1.5rem 0;
+                                }
+
+                                .add-review-btn {
+                                    display: inline-block;
+                                    padding: 0.75rem 2rem;
+                                    background-color: #4CAF50;
+                                    color: white;
+                                    text-decoration: none;
+                                    border-radius: 4px;
+                                    font-weight: 600;
+                                    transition: background-color 0.2s;
+                                }
+
+                                .add-review-btn:hover {
+                                    background-color: #45a049;
+                                }
+
+                                .already-reviewed {
+                                    color: #666;
+                                    font-style: italic;
+                                    margin: 1rem 0;
+                                }
+
+                                .already-reviewed a {
+                                    color: #4CAF50;
+                                    font-weight: 600;
+                                }
+
+                                .login-prompt {
+                                    color: #666;
+                                    margin: 1rem 0;
+                                }
+
+                                .login-prompt a {
+                                    color: #2196F3;
+                                    font-weight: 600;
+                                }
+
+                                .reviews-list {
+                                    margin-top: 2rem;
+                                }
+
+                                .review-item {
+                                    background: white;
+                                    border: 1px solid #ddd;
+                                    border-radius: 8px;
+                                    padding: 1.5rem;
+                                    margin-bottom: 1.5rem;
+                                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                                }
+
+                                .review-header-item {
+                                    display: flex;
+                                    justify-content: space-between;
+                                    align-items: flex-start;
+                                    margin-bottom: 1rem;
+                                    flex-wrap: wrap;
+                                    gap: 0.5rem;
+                                }
+
+                                .reviewer-info {
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 0.5rem;
+                                }
+
+                                .reviewer-name {
+                                    font-size: 1.1rem;
+                                    color: #333;
+                                }
+
+                                .review-rating-stars {
+                                    display: flex;
+                                    gap: 0.25rem;
+                                }
+
+                                .review-rating-stars .star {
+                                    font-size: 1.25rem;
+                                }
+
+                                .review-date {
+                                    color: #999;
+                                    font-size: 0.9rem;
+                                }
+
+                                .review-content p {
+                                    line-height: 1.6;
+                                    color: #333;
+                                    margin: 0;
+                                }
+
+                                .review-actions-user {
+                                    margin-top: 1rem;
+                                    padding-top: 1rem;
+                                    border-top: 1px solid #eee;
+                                    display: flex;
+                                    gap: 1rem;
+                                }
+
+                                .edit-review-link,
+                                .delete-review-link {
+                                    font-size: 0.9rem;
+                                    text-decoration: none;
+                                    padding: 0.25rem 0.75rem;
+                                    border-radius: 4px;
+                                    transition: background-color 0.2s;
+                                }
+
+                                .edit-review-link {
+                                    color: #2196F3;
+                                    background-color: #E3F2FD;
+                                }
+
+                                .edit-review-link:hover {
+                                    background-color: #BBDEFB;
+                                }
+
+                                .delete-review-link {
+                                    color: #f44336;
+                                    background-color: #FFEBEE;
+                                }
+
+                                .delete-review-link:hover {
+                                    background-color: #FFCDD2;
+                                }
+
+                                @media (max-width: 600px) {
+                                    .reviews-section {
+                                        padding: 1rem;
+                                    }
+
+                                    .review-header-item {
+                                        flex-direction: column;
+                                    }
+                                }
+                            </style>

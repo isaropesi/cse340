@@ -1,0 +1,230 @@
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.locals.title="My Reviews" } %>
+
+        <%- messages() %>
+
+            <div class="my-reviews-container">
+                <% if (reviews && reviews.length> 0) { %>
+                    <p class="review-count">You have written <%= reviews.length %> review<%= reviews.length !==1 ? 's'
+                                : '' %>.</p>
+
+                    <div class="reviews-list">
+                        <% reviews.forEach(review=> { %>
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <h3>
+                                        <%= review.inv_year %>
+                                            <%= review.inv_make %>
+                                                <%= review.inv_model %>
+                                    </h3>
+                                    <div class="review-actions">
+                                        <a href="/review/edit/<%= review.review_id %>" class="edit-link"
+                                            title="Edit Review">✏️ Edit</a>
+                                        <a href="/review/delete/<%= review.review_id %>" class="delete-link"
+                                            title="Delete Review">🗑️ Delete</a>
+                                    </div>
+                                </div>
+
+                                <div class="review-rating">
+                                    <span class="stars">
+                                        <% for(let i=1; i <=5; i++) { %>
+                                            <span class="star <%= i <= review.review_rating ? 'filled' : '' %>">★</span>
+                                            <% } %>
+                                    </span>
+                                    <span class="rating-number">(<%= review.review_rating %>/5)</span>
+                                </div>
+
+                                <div class="review-text">
+                                    <p>
+                                        <%= review.review_text %>
+                                    </p>
+                                </div>
+
+                                <div class="review-meta">
+                                    <span class="review-date">
+                                        Posted on <%= new Date(review.review_date).toLocaleDateString('en-US', {
+                                            year: 'numeric' , month: 'long' , day: 'numeric' }) %>
+                                    </span>
+                                    <a href="/inv/detail/<%= review.inv_id %>" class="view-vehicle-link">View Vehicle
+                                        →</a>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } else { %>
+                        <div class="no-reviews">
+                            <p>You haven't written any reviews yet.</p>
+                            <p>Browse our <a href="/inv">inventory</a> and share your experience with a vehicle!</p>
+                        </div>
+                        <% } %>
+            </div>
+
+            <style>
+                .my-reviews-container {
+                    max-width: 800px;
+                    margin: 2rem auto;
+                    padding: 1rem;
+                }
+
+                .review-count {
+                    font-size: 1.1rem;
+                    color: #666;
+                    margin-bottom: 1.5rem;
+                }
+
+                .reviews-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1.5rem;
+                }
+
+                .review-card {
+                    background: white;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 1.5rem;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                    transition: box-shadow 0.2s;
+                }
+
+                .review-card:hover {
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                }
+
+                .review-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    margin-bottom: 1rem;
+                    flex-wrap: wrap;
+                    gap: 1rem;
+                }
+
+                .review-header h3 {
+                    margin: 0;
+                    color: #333;
+                    font-size: 1.25rem;
+                }
+
+                .review-actions {
+                    display: flex;
+                    gap: 1rem;
+                }
+
+                .edit-link,
+                .delete-link {
+                    text-decoration: none;
+                    font-size: 0.9rem;
+                    padding: 0.25rem 0.75rem;
+                    border-radius: 4px;
+                    transition: background-color 0.2s;
+                }
+
+                .edit-link {
+                    color: #2196F3;
+                    background-color: #E3F2FD;
+                }
+
+                .edit-link:hover {
+                    background-color: #BBDEFB;
+                }
+
+                .delete-link {
+                    color: #f44336;
+                    background-color: #FFEBEE;
+                }
+
+                .delete-link:hover {
+                    background-color: #FFCDD2;
+                }
+
+                .review-rating {
+                    margin-bottom: 1rem;
+                }
+
+                .stars {
+                    display: inline-block;
+                }
+
+                .star {
+                    color: #ddd;
+                    font-size: 1.25rem;
+                }
+
+                .star.filled {
+                    color: #ffc107;
+                }
+
+                .rating-number {
+                    margin-left: 0.5rem;
+                    color: #666;
+                    font-size: 0.9rem;
+                }
+
+                .review-text {
+                    margin-bottom: 1rem;
+                }
+
+                .review-text p {
+                    line-height: 1.6;
+                    color: #333;
+                    margin: 0;
+                }
+
+                .review-meta {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding-top: 1rem;
+                    border-top: 1px solid #eee;
+                    font-size: 0.9rem;
+                    flex-wrap: wrap;
+                    gap: 0.5rem;
+                }
+
+                .review-date {
+                    color: #666;
+                }
+
+                .view-vehicle-link {
+                    color: #4CAF50;
+                    text-decoration: none;
+                    font-weight: 600;
+                }
+
+                .view-vehicle-link:hover {
+                    text-decoration: underline;
+                }
+
+                .no-reviews {
+                    text-align: center;
+                    padding: 3rem 1rem;
+                    background: #f9f9f9;
+                    border-radius: 8px;
+                }
+
+                .no-reviews p {
+                    font-size: 1.1rem;
+                    color: #666;
+                    margin-bottom: 1rem;
+                }
+
+                .no-reviews a {
+                    color: #4CAF50;
+                    font-weight: 600;
+                }
+
+                @media (max-width: 600px) {
+                    .review-header {
+                        flex-direction: column;
+                    }
+
+                    .review-actions {
+                        width: 100%;
+                        justify-content: flex-start;
+                    }
+                }
+            </style>

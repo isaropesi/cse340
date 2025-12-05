@@ -1,0 +1,231 @@
+<% if (title) { %>
+    <h1>
+        <%= title %>
+    </h1>
+    <% } else { res.locals.title="Edit Review" } %>
+
+        <%- messages() %>
+
+            <% if (errors) { %>
+                <ul class="notice">
+                    <% errors.array().forEach(error=> { %>
+                        <li>
+                            <%= error.msg %>
+                        </li>
+                        <% }) %>
+                </ul>
+                <% } %>
+
+                    <div class="review-form-container">
+                        <p>Update your review for the <strong>
+                                <%= vehicleName %>
+                            </strong></p>
+
+                        <form action="/review/update" method="post" id="editReviewForm">
+                            <fieldset>
+                                <legend>Edit Your Review</legend>
+
+                                <label for="review_rating">Rating (1-5 stars):</label>
+                                <div class="star-rating">
+                                    <% for(let i=5; i>= 1; i--) { %>
+                                        <input type="radio" id="star<%= i %>" name="review_rating" value="<%= i %>"
+                                            <%=review_rating==i ? 'checked' : '' %>
+                                        required
+                                        >
+                                        <label for="star<%= i %>" title="<%= i %> stars">★</label>
+                                        <% } %>
+                                </div>
+                                <span class="error-message" id="ratingError"></span>
+
+                                <label for="review_text">Your Review:</label>
+                                <textarea id="review_text" name="review_text" rows="6"
+                                    placeholder="Tell us about your experience with this vehicle (minimum 10 characters)..."
+                                    required minlength="10" maxlength="1000"><%= review_text %></textarea>
+                                <span class="char-count"><span id="charCount">0</span>/1000 characters</span>
+                                <span class="error-message" id="textError"></span>
+
+                                <input type="hidden" name="review_id" value="<%= review_id %>">
+                                <input type="hidden" name="inv_id" value="<%= inv_id %>">
+
+                                <button type="submit" class="submit-btn">Update Review</button>
+                                <a href="/inv/detail/<%= inv_id %>" class="cancel-btn">Cancel</a>
+                            </fieldset>
+                        </form>
+                    </div>
+
+                    <style>
+                        .review-form-container {
+                            max-width: 600px;
+                            margin: 2rem auto;
+                            padding: 2rem;
+                            background: #f9f9f9;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                        }
+
+                        fieldset {
+                            border: none;
+                            padding: 0;
+                        }
+
+                        legend {
+                            font-size: 1.5rem;
+                            font-weight: bold;
+                            margin-bottom: 1rem;
+                            color: #333;
+                        }
+
+                        label {
+                            display: block;
+                            margin-top: 1rem;
+                            margin-bottom: 0.5rem;
+                            font-weight: 600;
+                            color: #555;
+                        }
+
+                        .star-rating {
+                            display: flex;
+                            flex-direction: row-reverse;
+                            justify-content: flex-end;
+                            gap: 0.25rem;
+                            margin-bottom: 0.5rem;
+                        }
+
+                        .star-rating input[type="radio"] {
+                            display: none;
+                        }
+
+                        .star-rating label {
+                            font-size: 2rem;
+                            color: #ddd;
+                            cursor: pointer;
+                            transition: color 0.2s;
+                            margin: 0;
+                        }
+
+                        .star-rating input[type="radio"]:checked~label,
+                        .star-rating label:hover,
+                        .star-rating label:hover~label {
+                            color: #ffc107;
+                        }
+
+                        textarea {
+                            width: 100%;
+                            padding: 0.75rem;
+                            border: 1px solid #ddd;
+                            border-radius: 4px;
+                            font-family: inherit;
+                            font-size: 1rem;
+                            resize: vertical;
+                        }
+
+                        textarea:focus {
+                            outline: none;
+                            border-color: #2196F3;
+                            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+                        }
+
+                        .char-count {
+                            display: block;
+                            text-align: right;
+                            font-size: 0.875rem;
+                            color: #666;
+                            margin-top: 0.25rem;
+                        }
+
+                        .error-message {
+                            display: block;
+                            color: #d32f2f;
+                            font-size: 0.875rem;
+                            margin-top: 0.25rem;
+                        }
+
+                        .submit-btn,
+                        .cancel-btn {
+                            display: inline-block;
+                            margin-top: 1.5rem;
+                            margin-right: 1rem;
+                            padding: 0.75rem 2rem;
+                            border: none;
+                            border-radius: 4px;
+                            font-size: 1rem;
+                            font-weight: 600;
+                            cursor: pointer;
+                            text-decoration: none;
+                            transition: background-color 0.2s;
+                        }
+
+                        .submit-btn {
+                            background-color: #2196F3;
+                            color: white;
+                        }
+
+                        .submit-btn:hover {
+                            background-color: #1976D2;
+                        }
+
+                        .cancel-btn {
+                            background-color: #757575;
+                            color: white;
+                        }
+
+                        .cancel-btn:hover {
+                            background-color: #616161;
+                        }
+
+                        .notice {
+                            background-color: #fff3cd;
+                            border: 1px solid #ffc107;
+                            border-radius: 4px;
+                            padding: 1rem;
+                            margin-bottom: 1rem;
+                            list-style: none;
+                        }
+
+                        .notice li {
+                            color: #856404;
+                        }
+                    </style>
+
+                    <script>
+                        // Character counter
+                        const textarea = document.getElementById('review_text');
+                        const charCount = document.getElementById('charCount');
+
+                        function updateCharCount() {
+                            charCount.textContent = textarea.value.length;
+                        }
+
+                        textarea.addEventListener('input', updateCharCount);
+                        updateCharCount(); // Initialize count
+
+                        // Form validation
+                        document.getElementById('editReviewForm').addEventListener('submit', function (e) {
+                            let isValid = true;
+
+                            // Check rating
+                            const rating = document.querySelector('input[name="review_rating"]:checked');
+                            if (!rating) {
+                                document.getElementById('ratingError').textContent = 'Please select a rating';
+                                isValid = false;
+                            } else {
+                                document.getElementById('ratingError').textContent = '';
+                            }
+
+                            // Check review text
+                            const text = textarea.value.trim();
+                            if (text.length < 10) {
+                                document.getElementById('textError').textContent = 'Review must be at least 10 characters';
+                                isValid = false;
+                            } else if (text.length > 1000) {
+                                document.getElementById('textError').textContent = 'Review must not exceed 1000 characters';
+                                isValid = false;
+                            } else {
+                                document.getElementById('textError').textContent = '';
+                            }
+
+                            if (!isValid) {
+                                e.preventDefault();
+                            }
+                        });
+                    </script>

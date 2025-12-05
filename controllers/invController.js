@@ -1,4 +1,5 @@
 const invModel = require("../models/inventory-model")
+const reviewModel = require("../models/review-model")
 const utilities = require("../utilities/")
 
 const invCont = {}
@@ -25,6 +26,7 @@ invCont.buildByClassificationId = utilities.handleErrors(async function (req, re
 * ********************************* */
 invCont.buildDetail = utilities.handleErrors(async function (req, res, next) {
   const inv_id = req.params.invId
+
   const vehicleData = await invModel.getInventoryById(inv_id)
 
   // 404 Error handling if vehicle not found
@@ -35,6 +37,16 @@ invCont.buildDetail = utilities.handleErrors(async function (req, res, next) {
     return
   }
 
+  // Get reviews and rating data for this vehicle
+  const reviews = await reviewModel.getReviewsByInventoryId(inv_id)
+  const ratingData = await reviewModel.getAverageRating(inv_id)
+
+  // Check if user has already reviewed this vehicle
+  let hasUserReviewed = false
+  if (res.locals.loggedin) {
+    hasUserReviewed = await reviewModel.hasUserReviewed(inv_id, res.locals.accountData.account_id)
+  }
+
   const nav = await utilities.getNav()
   const detailGrid = utilities.buildVehicleDetail(vehicleData)
   const title = `${vehicleData.inv_year} ${vehicleData.inv_make} ${vehicleData.inv_model}`
@@ -43,6 +55,10 @@ invCont.buildDetail = utilities.handleErrors(async function (req, res, next) {
     title: title,
     nav,
     detailGrid,
+    reviews,
+    ratingData,
+    hasUserReviewed,
+    inv_id,
     errors: null,
   })
 })
